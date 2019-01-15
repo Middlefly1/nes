@@ -3,6 +3,7 @@
         <div class="col-3 bg-light px-4 py-3">
             <h3 class="mb-4">Календарь</h3>
             <datepicker
+            :value="selected.length == 0 ? today : selected"
             :inline="true" 
             :format="formatter"
             ></datepicker>
@@ -58,7 +59,10 @@
             <router-link to="/" class="btn btn-outline-secondary mt-3">
                 Назад
             </router-link>
-            <code class="my-3 d-block alert alert-secondary">{{ listOne }}</code>
+            <code class="my-3 d-block alert alert-secondary">{{ listFireOne }}</code>
+            <div v-if="listFireOne.length == 0" class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
 </template>
@@ -67,6 +71,8 @@
 import Datepicker from 'vuejs-datepicker'
 import Moment from 'moment'
 import axios from 'axios'
+import routesapp from '@/store/api'
+import { setTimeout } from 'timers';
 
 export default { 
     components: {
@@ -74,6 +80,7 @@ export default {
     },
     data() {
         return {
+            today: Moment(new Date()).format("DD.MM.YYYY"),
             selected: "",
             format: "d MMMM yyyy",
             getGroup: '',
@@ -90,34 +97,29 @@ export default {
                 ],
                 g_date: '07.01.2019'
             },
-            listFireOne: null
+            listFireOne: []
         }
+    },
+    mounted() {
+
     },
     methods: {
         formatter(date) {
             this.selected = Moment(date).format("DD.MM.YYYY")
         },
         getData() {
-            axios.get('http://localhost:8888/groups')
-            .then(function (response) {
-                // handle success
-                console.log(response);
-               this.listFireOne = response.data
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
+            console.log (routesapp.list.get);
+            axios.get(routesapp.list.get)
+            .then(res => (this.listFireOne = res.data));
         }
     },
     computed: {
         
     },
     created() {
-        this.getData()
+        setTimeout(() => {
+            this.listFireOne.push(this.getData())
+        }, 1000);
     }
 }
 </script>
