@@ -2,11 +2,25 @@
     <div class="row" style="min-height: 100vh">
         <div class="col-3 d-none d-md-block  px-4 py-3">
             <h3 class="mb-4">Календарь</h3>
-            <datepicker
-            :inline="true" 
-            :format="formatter"
-            v-model="sendselected"
-            ></datepicker>
+            <div class="position-relative">
+                <div 
+                    class="overpicker d-none bg-light position-absolute w-100 h-100"
+                    style="z-index: 99; opacity: 0.7"
+                    ref="overpicker"
+                >
+                    <div 
+                    class="d-block spinner-border text-primary" 
+                    role="status"
+                    style="margin: 40% auto;">
+                    </div>
+                </div>
+                <datepicker
+                ref="datepicker"
+                :inline="true" 
+                :format="formatter"
+                v-model="sendselected"
+                ></datepicker>
+            </div>
         </div>
         <div class="col-12 col-md-9 px-5 py-3">
             <h3 class="mb-4">Расписание занятий</h3>
@@ -114,6 +128,11 @@ export default {
             axios
                 .get(routeapi, {params: {selected}})
                 .then(res => (console.log(JSON.parse(res.data))))
+                this.$refs.overpicker.classList.add('d-block')
+            setTimeout(() => {
+                this.$refs.overpicker.classList.remove('d-block')
+                this.$refs.overpicker.classList.add('d-none')
+            }, 500)
         }
     },
     computed: {
