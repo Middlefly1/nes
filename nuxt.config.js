@@ -38,8 +38,8 @@ module.exports = {
   */
   plugins: [
     //'@/plugins/vuetify'
-    //'@/plugins/bootstrap'
-    '@/plugins/argon'
+    '@/plugins/bootstrap'
+    //'@/plugins/argon'
   ],
 
   /*
